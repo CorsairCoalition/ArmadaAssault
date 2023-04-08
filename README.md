@@ -1,6 +1,6 @@
-# Sergeant Socket
+# Armada Assault
 
-A message broker that connects to generals.io via socket.io, publishes all game updates to Redis, and receives command and actions from other components on Redis.
+An action generator that reads the game state and generates recommended actions. These action recommendations are reviewed by another module that makes the decision.
 
 ## Installation
 
@@ -16,5 +16,5 @@ Copy `config.json.example` to `config.json` and enter your Redis configuration.
 ## Usage
 
 ```
-node app
+npm start
 ```
