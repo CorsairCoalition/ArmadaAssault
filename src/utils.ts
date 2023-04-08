@@ -1,3 +1,24 @@
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url';
+
+let availableActions: string[] = []
+
+export function getAvailableActions(): string[] {
+	if (availableActions.length > 0) return availableActions
+
+	const currentFilePath = fileURLToPath(import.meta.url)
+	const currentDir = path.dirname(currentFilePath)
+	const actionDir = path.join(currentDir, 'action')
+	const files = fs.readdirSync(actionDir);
+
+	availableActions = files
+		.filter((file) => file.endsWith('.js') && file !== 'action.js')
+		.map((file) => file.replace('.js', ''));
+
+	return availableActions
+}
+
 export function later(delay: number) {
 	return new Promise(function (resolve) {
 		setTimeout(resolve, delay)

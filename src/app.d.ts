@@ -11,24 +11,6 @@ declare namespace Game {
 		FFA = 'ffa',
 		CUSTOM = 'custom',
 	}
-
-	interface State {
-		cities?: number[]
-		map?: number[]
-		playerIndex?: number
-		replay_id?: string
-		usernames?: string[]
-		ownTiles?: Map<number, number>
-		enemyTiles?: Map<number, number>
-		discoveredTiles?: boolean[]
-		armies?: number[]
-		ownGeneral?: number
-		enemyGeneral?: number
-		turn?: number
-		width?: number
-		height?: number
-		size?: number
-	}
 }
 
 declare namespace GeneralsIO {
@@ -116,6 +98,9 @@ declare namespace RedisData {
 	}
 
 	interface Recommendation {
+		recommender: string
+		confidence: number
+		priority: number
 		interrupt: boolean
 		actions: Attack[]
 	}
@@ -141,6 +126,7 @@ declare namespace RedisData {
 		ACTION = 'action',
 		RECOMMENDATION = 'recommendation',
 		DECONFLICT = 'deconflict',
+		TURN = 'turn',
 	}
 
 	const enum KEY {
