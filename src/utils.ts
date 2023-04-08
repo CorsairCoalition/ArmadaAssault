@@ -42,17 +42,22 @@ export class Log {
 	}
 
 	static stderr(...args: string[]) {
+		// output red text
+		process.stderr.write('\x1b[31m')
 		console.error(new Date().toISOString(), args.join(' '))
+		process.stderr.write('\x1b[0m')
 	}
 
 	static debug(...args: string[]) {
 		if (!Log.debugEnabled) return
-		console.error(new Date().toISOString(), args.join(' '))
+		// output blue text
+		process.stdout.write('\x1b[34m')
+		console.log(new Date().toISOString(), args.join(' '))
+		process.stdout.write('\x1b[0m')
 	}
 
 	static debugObject(obj: any) {
 		if (!Log.debugEnabled) return
 		console.error(JSON.stringify(obj, null, 2))
 	}
-
 }
