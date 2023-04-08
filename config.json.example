@@ -1,4 +1,5 @@
 {
+	"BOT_CLASS": "cortex",
 	"redisConfig": {
 		"HOST": "",
 		"PORT": 443,
