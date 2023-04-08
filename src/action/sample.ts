@@ -17,9 +17,9 @@ export default class SampleAction extends Action {
 
     if (!turn) return
 
-    let end: number
+    if (random(1, 100) < 90) return
 
-    // Your implementation here
+    let end: number
 
     switch (turn % 4) {
       case 0:

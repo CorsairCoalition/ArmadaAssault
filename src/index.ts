@@ -49,6 +49,8 @@ async function run(botId: string, actionNames: string[]) {
 	Log.debug("[debug] debugging enabled, options:")
 	Log.debugObject(options)
 
+	config.botId = botId
+
 	// start the application to initiate redis and socket connections
 	let app = new App(config, actionNames)
 	// gracefully exit on SIGINT and SIGTERM
