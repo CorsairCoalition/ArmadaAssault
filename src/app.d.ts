@@ -11,6 +11,24 @@ declare namespace Game {
 		FFA = 'ffa',
 		CUSTOM = 'custom',
 	}
+
+	interface State {
+		cities?: number[]
+		map?: number[]
+		playerIndex?: number
+		replay_id?: string
+		usernames?: string[]
+		ownTiles?: Map<number, number>
+		enemyTiles?: Map<number, number>
+		discoveredTiles?: boolean[]
+		armies?: number[]
+		ownGeneral?: number
+		enemyGeneral?: number
+		turn?: number
+		width?: number
+		height?: number
+		size?: number
+	}
 }
 
 declare namespace GeneralsIO {
@@ -73,7 +91,7 @@ declare namespace GeneralsIO {
 	interface Attack {
 		start: number
 		end: number
-		is50: boolean
+		is50?: boolean
 	}
 }
 
@@ -106,7 +124,6 @@ declare namespace RedisData {
 		connected?: string
 		disconnected?: string
 		game_start?: GeneralsIO.GameStart
-		game_update?: GeneralsIO.GameUpdate
 		game_state?: GameState
 		game_lost?: GeneralsIO.GameLost
 		game_won?: GeneralsIO.GameWon
@@ -115,6 +132,36 @@ declare namespace RedisData {
 			gameId?: string
 		}
 		left?: boolean
+	}
+
+	const enum CHANNEL {
+		COMMAND = 'command',
+		STATE = 'state',
+		GAME_UPDATE = 'gameUpdate',
+		ACTION = 'action',
+		RECOMMENDATION = 'recommendation',
+		DECONFLICT = 'deconflict',
+	}
+
+	const enum KEY {
+		TURN = 'turn',
+		MAP = 'map',
+		WIDTH = 'width',
+		HEIGHT = 'height',
+		SIZE = 'size',
+		TEAMS = 'teams',
+		SCORES = 'scores',
+		PLAYER_INDEX = 'playerIndex',
+		REPLAY_ID = 'replay_id',
+		USERNAMES = 'usernames',
+		CHAT_ROOM = 'chat_room',
+		CITIES = 'cities',
+		DISCOVERED_TILES = 'discoveredTiles',
+		ARMIES = 'armies',
+		ENEMY_GENERAL = 'enemyGeneral',
+		OWN_GENERAL = 'ownGeneral',
+		OWN_TILES = 'ownTiles',
+		ENEMY_TILES = 'enemyTiles',
 	}
 }
 
