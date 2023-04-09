@@ -1,17 +1,17 @@
 /// <reference path="../app.d.ts" />
 
 // sampleAction.ts
-import Action from './action.js';
-import { Log, later, random } from '../utils.js';
-
+import Action from './action.js'
+import { Log, later, random } from '../utils.js'
+import { GameMap } from '../gameMap.js'
 
 export default class SampleAction extends Action {
 
-  async generateRecommendation(values: Record<string, any>): Promise<RedisData.Recommendation> {
-    let turn = values[RedisData.KEY.TURN]
-    let width = values[RedisData.KEY.WIDTH]
-    let height = values[RedisData.KEY.HEIGHT]
-    let ownGeneral = values[RedisData.KEY.OWN_GENERAL]
+  async generateRecommendation(gameState: Record<string, any>, gameMap: GameMap): Promise<RedisData.Recommendation> {
+    let turn = gameState[RedisData.KEY.TURN]
+    let width = gameState[RedisData.KEY.WIDTH]
+    let height = gameState[RedisData.KEY.HEIGHT]
+    let ownGeneral = gameState[RedisData.KEY.OWN_GENERAL]
 
     Log.debug('Turn:', turn, 'Width:', width, 'Height:', height, 'Own General:', ownGeneral)
 

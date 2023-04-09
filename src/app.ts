@@ -3,12 +3,13 @@
 import { Log, later, random } from './utils.js'
 import { Redis } from './redis.js'
 import Action from './action/action.js'
+import { GameMap } from './gameMap.js'
 
 export class App {
 	private redis: Redis
-	private replay_id: string
-	private playing: boolean = false
 	private actions: Action[] = [];
+	private gameMap: GameMap
+	private gameMapInitialized = false
 
 	constructor(config: any, actionNames: string[]) {
 		config.redisConfig.CHANNEL_PREFIX = config.BOT_CLASS + '-' + config.botId
@@ -52,17 +53,14 @@ export class App {
 
 		switch (eventType) {
 			case 'joined' || 'left':
-				this.playing = false
 				Log.stdout('Bot', eventType)
 				return
 			case 'game_start':
-				this.playing = true
 				Log.stdout('Game started')
-				this.replay_id = state.game_start.replay_id
-				this.redis.setKeyspace(this.replay_id)
+				this.redis.setKeyspace(state.game_start.replay_id)
+				this.gameMapInitialized = false
 				return
 			case 'game_won' || 'game_lost':
-				this.playing = false
 				Log.stdout('Game ended:', eventType)
 				return
 		}
@@ -72,9 +70,17 @@ export class App {
 	// }
 
 	private handleTurnUpdates = async (turn: number) => {
+		const gameState = await this.redis.getAllGameKeys()
+
+		if (!this.gameMapInitialized) {
+			this.gameMapInitialized = true
+			this.gameMap = new GameMap(gameState)
+		}
+
+		this.gameMap.update(gameState)
+
 		for (const action of this.actions) {
-			const gameState = await this.redis.getAllGameKeys()
-			const recommendation = await action.generateRecommendation(gameState)
+			const recommendation = await action.generateRecommendation(gameState, this.gameMap)
 			if (recommendation) {
 				this.redis.publish(RedisData.CHANNEL.RECOMMENDATION, recommendation)
 			}

@@ -75,6 +75,19 @@ declare namespace GeneralsIO {
 		end: number
 		is50?: boolean
 	}
+
+	interface Tile {
+		index: number
+		value: GeneralsIO.TILE
+	}
+
+	const enum TILE {
+		EMPTY = -1,
+		MOUNTAIN = -2,
+		FOG = -3,
+		FOG_OBSTACLE = -4, // Cities and Mountains show up as Obstacles in the fog of war.
+		OFF_LIMITS = -5
+	}
 }
 
 declare namespace RedisData {

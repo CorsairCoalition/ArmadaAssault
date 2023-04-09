@@ -1,6 +1,8 @@
+import { GameMap } from "../gameMap"
+
 // action.ts
 export default abstract class Action {
 
-	abstract generateRecommendation(values: Record<string, any>): Promise<RedisData.Recommendation>;
+	abstract generateRecommendation(gameState: Record<string, any>, gameMap: GameMap): Promise<RedisData.Recommendation>;
 
 }
