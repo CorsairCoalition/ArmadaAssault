@@ -47,7 +47,8 @@ async function run(botId: string, actionNames: string[]) {
 	// debug output
 	Log.stdout(`[initilizing] ${pkg.name} v${pkg.version}`)
 	Log.debug("[debug] debugging enabled, options:")
-	Log.debugObject(options)
+	Log.debug("[debug] debugging enabled")
+	Log.debugObject('Command Line Options', options)
 
 	config.botId = botId
 
