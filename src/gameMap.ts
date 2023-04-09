@@ -4,10 +4,14 @@ export class GameMap {
 	height: number
 	size: number
 	playerIndex: number
-	cities: number[] = []
-	terrain: number[] = []
+	turn: number = 0
 	armies: number[] = []
+	terrain: number[] = []
+	cities: number[] = []
+	ownGeneral: number = -1
+	enemyGeneral: number = -1
 	ownTiles: Map<number, number> = new Map()
+	enemyTiles: Map<number, number> = new Map()
 	discoveredTiles: boolean[] = []
 
 	constructor(gameState: Record<string, any>) {
@@ -18,10 +22,14 @@ export class GameMap {
 	}
 
 	public update(gameState: Record<string, any>) {
-		this.cities = gameState[RedisData.KEY.CITIES]
-		this.terrain = gameState[RedisData.KEY.MAP]
+		this.turn = gameState[RedisData.KEY.TURN]
 		this.armies = gameState[RedisData.KEY.ARMIES]
+		this.terrain = gameState[RedisData.KEY.TERRAIN]
+		this.cities = gameState[RedisData.KEY.CITIES]
+		this.ownGeneral = gameState[RedisData.KEY.OWN_GENERAL]
+		this.enemyGeneral = gameState[RedisData.KEY.ENEMY_GENERAL]
 		this.ownTiles = gameState[RedisData.KEY.OWN_TILES]
+		this.enemyTiles = gameState[RedisData.KEY.ENEMY_TILES]
 		this.discoveredTiles = gameState[RedisData.KEY.DISCOVERED_TILES]
 	}
 

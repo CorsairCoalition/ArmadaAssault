@@ -144,7 +144,6 @@ declare namespace RedisData {
 
 	const enum KEY {
 		TURN = 'turn',
-		MAP = 'map',
 		WIDTH = 'width',
 		HEIGHT = 'height',
 		SIZE = 'size',
@@ -154,13 +153,14 @@ declare namespace RedisData {
 		REPLAY_ID = 'replay_id',
 		USERNAMES = 'usernames',
 		CHAT_ROOM = 'chat_room',
-		CITIES = 'cities',
-		DISCOVERED_TILES = 'discoveredTiles',
 		ARMIES = 'armies',
-		ENEMY_GENERAL = 'enemyGeneral',
+		TERRAIN = 'terrain',
+		CITIES = 'cities',
 		OWN_GENERAL = 'ownGeneral',
+		ENEMY_GENERAL = 'enemyGeneral',
 		OWN_TILES = 'ownTiles',
 		ENEMY_TILES = 'enemyTiles',
+		DISCOVERED_TILES = 'discoveredTiles',
 	}
 }
 
