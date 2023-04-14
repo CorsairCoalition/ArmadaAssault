@@ -9,7 +9,8 @@ export class App {
 	private redis: Redis
 	private actions: Action[] = [];
 	private gameMap: GameMap
-	private gameMapInitialized = false
+	// private gameMapInitialized = false
+	private currentReplayId: string
 
 	constructor(config: any, actionNames: string[]) {
 		config.redisConfig.CHANNEL_PREFIX = config.BOT_CLASS + '-' + config.botId
@@ -41,39 +42,20 @@ export class App {
 	private initializeRedisConnection = async (redisConfig: Config.Redis) => {
 		this.redis = new Redis(redisConfig)
 		await this.redis.connect()
-		// this.redis.subscribe(RedisData.CHANNEL.GAME_UPDATE, this.handleGameUpdates)
 		this.redis.subscribe(RedisData.CHANNEL.TURN, this.handleTurnUpdates)
-		return this.redis.subscribe(RedisData.CHANNEL.STATE, this.handleStateUpdates)
 	}
 
-	private handleStateUpdates = (state: RedisData.State) => {
-		Log.debug('State update: ' + JSON.stringify(state))
-
-		let eventType = Object.keys(state)[0]
-
-		switch (eventType) {
-			case 'joined' || 'left':
-				Log.stdout('Bot', eventType)
-				return
-			case 'game_start':
-				Log.stdout('Game started')
-				this.redis.setKeyspace(state.game_start.replay_id)
-				this.gameMapInitialized = false
-				return
-			case 'game_won' || 'game_lost':
-				Log.stdout('Game ended:', eventType)
-				return
+	private handleTurnUpdates = async (data: any) => {
+		if (!data.replay_id || !data.turn) {
+			Log.stderr('Turn Update Invalid.', 'replay_id:', data.replay_id, ', turn: ' + data.turn)
+			return
 		}
-	}
 
-	// private handleGameUpdates = (game: GeneralsIO.GameUpdate) => {
-	// }
+		const gameState = await this.redis.getAllKeys(data.replay_id)
 
-	private handleTurnUpdates = async (turn: number) => {
-		const gameState = await this.redis.getAllGameKeys()
-
-		if (!this.gameMapInitialized) {
-			this.gameMapInitialized = true
+		let replayId = gameState[RedisData.KEY.REPLAY_ID]
+		if (this.currentReplayId !== replayId) {
+			this.currentReplayId = replayId
 			this.gameMap = new GameMap(gameState)
 		}
 

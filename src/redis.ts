@@ -8,7 +8,6 @@ export class Redis {
 	private publisher: RedisClientType
 	private subscriber: RedisClientType
 	private CHANNEL_PREFIX: string
-	private gameKeyspace: string
 
 	constructor(redisConfig: Config.Redis) {
 		this.CHANNEL_PREFIX = redisConfig.CHANNEL_PREFIX
@@ -32,13 +31,9 @@ export class Redis {
 		this.subscriber.connect()
 	])
 
-	public setKeyspace = (replay_id: string) => {
-		this.gameKeyspace = this.CHANNEL_PREFIX + '-' + replay_id
-	}
-
-	public async getGameKeys(...keys: Array<string>) {
+	public async getKeys(replay_id: string, ...keys: Array<string>) {
 		// JSON.parse each value
-		let valuesArr = await this.publisher.hmGet(this.gameKeyspace, keys)
+		let valuesArr = await this.publisher.hmGet(this.CHANNEL_PREFIX + '-' + replay_id, keys)
 		let values = {}
 		for (let key in valuesArr) {
 			values[keys[key]] = JSON.parse(valuesArr[key])
@@ -46,9 +41,9 @@ export class Redis {
 		return values
 	}
 
-	public async getAllGameKeys() {
+	public async getAllKeys(replay_id: string) {
 		// JSON.parse each value
-		let values = await this.publisher.hGetAll(this.gameKeyspace)
+		let values = await this.publisher.hGetAll(this.CHANNEL_PREFIX + '-' + replay_id)
 		for (let key in values) {
 			values[key] = JSON.parse(values[key])
 		}
