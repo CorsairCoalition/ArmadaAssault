@@ -1,9 +1,7 @@
-/// <reference path="../app.d.ts" />
-
 // sampleAction.ts
 import Action from './action.js'
 import { Log, later, random } from '../utils.js'
-import { GameMap } from '../gameMap.js'
+import GameMap from '../gameMap.js'
 
 export default class SampleAction extends Action {
 

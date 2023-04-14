@@ -1,4 +1,4 @@
-export class GameMap {
+export default class GameMap {
 
 	width: number
 	height: number

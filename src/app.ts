@@ -1,9 +1,9 @@
 /// <reference path="./app.d.ts" />
 
-import { Log, later, random } from './utils.js'
+import { Log } from './utils.js'
 import { Redis } from './redis.js'
 import Action from './action/action.js'
-import { GameMap } from './gameMap.js'
+import GameMap from './gameMap.js'
 
 export class App {
 	private redis: Redis

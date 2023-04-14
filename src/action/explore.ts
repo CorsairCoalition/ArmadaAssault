@@ -1,7 +1,8 @@
 import Action from './action.js'
+import Algorithms from '../algorithms.js'
 import GameMap from '../gameMap.js'
 
-export default class Spread extends Action {
+export default class Explore extends Action {
 
 	nextMove: number = 12
 	lastRecommendation: RedisData.Recommendation
@@ -16,29 +17,17 @@ export default class Spread extends Action {
 		const actions: GeneralsIO.Attack[] = []
 
 		for (const start of moveableTiles) {
-			const adjacentTiles = gameMap.getAdjacentTiles(start)
-			let bestTargetTile: GeneralsIO.Tile | null = null
-			let maxRemainingArmies = 0
+			const reachableTiles = Algorithms.bfs(gameMap, start, Number.MAX_VALUE)
+			let furthestTile = reachableTiles.reduce((prev, current) => {
+				return prev.generalDistance > current.generalDistance ? prev : current
+			})
 
-			for (const direction in adjacentTiles) {
-				if (adjacentTiles.hasOwnProperty(direction)) {
-					const targetTile = adjacentTiles[direction]
+			const shortestPath = Algorithms.dijkstra(gameMap, start, furthestTile.index)
 
-					if (gameMap.isWalkable(targetTile)) {
-						const remainingArmies = gameMap.remainingArmiesAfterAttack(start, targetTile.index)
-
-						if ((gameMap.isAdjacentToFog(targetTile.index) || remainingArmies > 0) && remainingArmies > maxRemainingArmies) {
-							bestTargetTile = targetTile
-							maxRemainingArmies = remainingArmies
-						}
-					}
-				}
-			}
-
-			if (bestTargetTile) {
+			for (let i = 0; i < shortestPath.length - 1; i++) {
 				actions.push({
-					start: start,
-					end: bestTargetTile.index
+					start: shortestPath[i].start,
+					end: shortestPath[i].end
 				})
 			}
 		}

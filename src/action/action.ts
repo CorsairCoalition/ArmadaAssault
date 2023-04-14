@@ -1,4 +1,6 @@
-import { GameMap } from "../gameMap"
+/// <reference path="../app.d.ts" />
+
+import GameMap from "../gameMap.js"
 
 // action.ts
 export default abstract class Action {
