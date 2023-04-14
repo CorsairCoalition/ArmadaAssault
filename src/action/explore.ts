@@ -4,7 +4,7 @@ import GameMap from '../gameMap.js'
 
 export default class Explore extends Action {
 
-	nextMove: number = 12
+	nextMove: number = 24
 	lastRecommendation: RedisData.Recommendation
 
 	async generateRecommendation(gameState: Record<string, any>, gameMap: GameMap): Promise<RedisData.Recommendation> {
@@ -17,18 +17,22 @@ export default class Explore extends Action {
 		const actions: GeneralsIO.Attack[] = []
 
 		for (const start of moveableTiles) {
-			const reachableTiles = Algorithms.bfs(gameMap, start, Number.MAX_VALUE)
-			let furthestTile = reachableTiles.reduce((prev, current) => {
-				return prev.generalDistance > current.generalDistance ? prev : current
-			})
-
-			const shortestPath = Algorithms.dijkstra(gameMap, start, furthestTile.index)
-
-			for (let i = 0; i < shortestPath.length - 1; i++) {
-				actions.push({
-					start: shortestPath[i].start,
-					end: shortestPath[i].end
+			const armiesAvailable = gameState.armies[start] - 1
+			if (armiesAvailable > 0) {
+				const reachableTiles = Algorithms.bfs(gameMap, start, armiesAvailable)
+				let furthestTile = reachableTiles.reduce((prev, current) => {
+					return prev.generalDistance > current.generalDistance ? prev : current
 				})
+
+				const shortestPath = Algorithms.dijkstra(gameMap, start, furthestTile.index)
+				const numActions = Math.min(armiesAvailable, shortestPath.length)
+
+				for (let i = 0; i < numActions; i++) {
+					actions.push({
+						start: shortestPath[i].start,
+						end: shortestPath[i].end
+					})
+				}
 			}
 		}
 

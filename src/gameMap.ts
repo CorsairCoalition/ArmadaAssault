@@ -118,8 +118,8 @@ export default class GameMap {
 	}
 
 	//takes a list of tiles and returns a list of all those with at least more than 1 unit
-	public getMoveableTiles() {
-		let tiles = []
+	public getMoveableTiles(): number[] {
+		let tiles: number[] = []
 		for (var [key, value] of this.ownTiles) {
 			if(value > 1) {
 				tiles.push(key)
