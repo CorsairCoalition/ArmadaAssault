@@ -13,10 +13,13 @@ export class Redis {
 		this.CHANNEL_PREFIX = redisConfig.CHANNEL_PREFIX
 
 		let connectionObj = {
-			url: `rediss://${redisConfig.USERNAME}:${redisConfig.PASSWORD}@${redisConfig.HOST}:${redisConfig.PORT}`,
+			username: process.env['REDIS_USERNAME'] || redisConfig.USERNAME,
+			password: process.env['REDIS_PASSWORD'] || redisConfig.PASSWORD,
 			socket: {
-				tls: true,
-				servername: redisConfig.HOST,
+				host: process.env['REDIS_HOST'] || redisConfig.HOST,
+				port: redisConfig.PORT,
+				tls: redisConfig.TLS,
+				servername: process.env['REDIS_HOST'] || redisConfig.HOST,
 			}
 		}
 

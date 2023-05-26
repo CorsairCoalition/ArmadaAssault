@@ -4,28 +4,34 @@ import { Log } from './utils.js'
 import { Redis } from './redis.js'
 import Action from './action/action.js'
 import GameMap from './gameMap.js'
+import crypto from 'crypto'
 
 export class App {
+	public botId: string
 	private redis: Redis
+	private actionNames: string[]
 	private actions: Action[] = [];
 	private gameMap: GameMap
-	// private gameMapInitialized = false
 	private currentReplayId: string
 
 	constructor(config: any, actionNames: string[]) {
-		config.redisConfig.CHANNEL_PREFIX = config.BOT_CLASS + '-' + config.botId
-		this.initialize(config, actionNames)
+		this.botId = config.BOT_ID_PREFIX + '-' + crypto.createHash('sha256').update(config.gameConfig.userId).digest('base64').replace(/[^\w\s]/gi, '').slice(-7)
+		config.redisConfig.CHANNEL_PREFIX = this.botId
+		this.actionNames = actionNames
+		this.initialize(config)
 	}
 
-	private async initialize(config: any, actionNames: string[]) {
-		await this.instantiateActions(actionNames)
+	private async initialize(config: any) {
+		await this.instantiateActions()
 		await this.initializeRedisConnection(config.redisConfig).then(() => {
 			Log.stdout('Redis connected')
 		})
 	}
 
-	private async instantiateActions(actionNames: string[]) {
-		for (const actionName of actionNames) {
+	private async instantiateActions() {
+		this.actions = []
+
+		for (const actionName of this.actionNames) {
 			try {
 				const actionModule = await import(`./action/${actionName}.js`)
 				const actionClass = actionModule.default
@@ -57,6 +63,8 @@ export class App {
 		if (this.currentReplayId !== replayId) {
 			this.currentReplayId = replayId
 			this.gameMap = new GameMap(gameState)
+			this.instantiateActions()
+			Log.stdout('New Game Started:', replayId)
 		}
 
 		this.gameMap.update(gameState)
@@ -70,7 +78,7 @@ export class App {
 	}
 
 	public quit = async () => {
-		Log.stdout('quitting')
+		Log.stdout('Closing Redis connection...')
 		return this.redis.quit()
 	}
 }

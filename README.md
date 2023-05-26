@@ -11,12 +11,12 @@ npm run build
 
 ## Configuration
 
-Copy `config.json.example` to `config.json` and enter your Redis configuration.
+Copy `config.json.example` to `config.json` and make desired changes.
 
 ## Usage
 
 ```
-Usage: npm start [options] <botId> <action>
+Usage: node . [options] <configFile> [actions...]
 
 a modular generals.io bot that implements advanced learning techniques
 
@@ -26,4 +26,10 @@ Options:
   -d, --debug          enable debugging (default: false)
   -h, --help           display help for command
 
+```
+
+## Example
+
+```
+node . config.json attack explore spread
 ```
