@@ -10,14 +10,14 @@ export default class Explore extends Action {
 	async generateRecommendation(gameState: Record<string, any>, gameMap: GameMap): Promise<RedisData.Recommendation> {
 		let turn = gameState[RedisData.KEY.TURN]
 		if (turn < this.nextMove) {
-			return
+			return null
 		}
 
 		const moveableTiles = gameMap.getMoveableTiles()
 		const actions: GeneralsIO.Attack[] = []
 
 		for (const start of moveableTiles) {
-			const armiesAvailable = gameState.armies[start] - 1
+			const armiesAvailable = gameState['armies'][start] - 1
 			if (armiesAvailable > 0) {
 				const reachableTiles = Algorithms.bfs(gameMap, start, armiesAvailable)
 				let furthestTile = reachableTiles.reduce((prev, current) => {
@@ -38,7 +38,7 @@ export default class Explore extends Action {
 
 		if (actions.length === 0) {
 			this.nextMove = turn + 5
-			return
+			return null
 		}
 
 		this.nextMove = turn + actions.length

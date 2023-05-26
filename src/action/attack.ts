@@ -10,7 +10,7 @@ export default class Attack extends Action {
 	async generateRecommendation(gameState: Record<string, any>, gameMap: GameMap): Promise<RedisData.Recommendation> {
 		let turn = gameState[RedisData.KEY.TURN]
 		if (turn < this.nextMove) {
-			return
+			return null
 		}
 
 		const moveableTiles = gameMap.getMoveableTiles()
@@ -47,7 +47,7 @@ export default class Attack extends Action {
 
 		if (actions.length === 0) {
 			this.nextMove = turn + 5
-			return
+			return null
 		}
 
 		this.nextMove = turn + Math.min(actions.length, 5)

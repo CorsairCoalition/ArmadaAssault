@@ -7,7 +7,7 @@ export default class Heuristics {
 	//tiles are arrays of Objects with index and generalDistance properties
 	// tiles returned by Algorithms.bfs
 	static chooseDiscoverTile(gameMap: GameMap, tiles: {index: number, generalDistance: number}[]) {
-		let generalCoords = gameMap.getCoordinatesFromTileIndex(gameMap.ownGeneral)
+		// let generalCoords = gameMap.getCoordinatesFromTileIndex(gameMap.ownGeneral)
 
 		let optimalTile = {"index": -1, "edgeWeight": -1}
 
@@ -36,6 +36,8 @@ export default class Heuristics {
 		} else {
 			console.log("No tile found. Something is going wrong here!")
 		}
+
+		return null
 	}
 
 	//find an enemy tile adjcaent to fog with a minimum army value
@@ -66,5 +68,6 @@ export default class Heuristics {
 		} else if(terrainValue < 0) {
 			return 3	// enemy tile
 		}
+		return 1
 	}
 }

@@ -43,7 +43,7 @@ async function run(configFile: string, actionNames: string[]) {
 
 	const config = JSON.parse(await fs.readFile(configFile, 'utf8'))
 	config.BOT_ID_PREFIX = config.BOT_ID_PREFIX || 'cortex'
-	Log.setDebugOutput(options.debug)
+	Log.setDebugOutput(options['debug'])
 
 	// debug output
 	Log.stdout(`[initilizing] ${pkg.name} v${pkg.version}`)
@@ -55,12 +55,12 @@ async function run(configFile: string, actionNames: string[]) {
 	let app = new App(config, actionNames)
 
 	// gracefully exit on SIGINT and SIGTERM
-	process.once('SIGINT', async (code) => {
+	process.once('SIGINT', async () => {
 		Log.stderr('Interrupted. Exiting gracefully.')
 		await app.quit()
 	})
 
-	process.once('SIGTERM', async (code) => {
+	process.once('SIGTERM', async () => {
 		Log.stderr('Terminated. Exiting gracefully.')
 		await app.quit()
 	})

@@ -101,7 +101,7 @@ export default class Algorithms {
 	}
 
 	//go from end backwards and reconstruct the path as an array
-	static constructDijkstraPath(start: number, end: number, previous: number[]) {
+	static constructDijkstraPath(_start: number, end: number, previous: number[]) {
 		let prevIndex: number
 		let curIndex: number = end
 		let path = []

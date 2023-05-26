@@ -1,11 +1,11 @@
 // sampleAction.ts
 import Action from './action.js'
-import { Log, later, random } from '../utils.js'
+import { Log, random } from '../utils.js'
 import GameMap from '../gameMap.js'
 
 export default class SampleAction extends Action {
 
-  async generateRecommendation(gameState: Record<string, any>, gameMap: GameMap): Promise<RedisData.Recommendation> {
+  async generateRecommendation(gameState: Record<string, any>, _gameMap: GameMap): Promise<RedisData.Recommendation> {
     let turn = gameState[RedisData.KEY.TURN]
     let width = gameState[RedisData.KEY.WIDTH]
     let height = gameState[RedisData.KEY.HEIGHT]
@@ -13,9 +13,9 @@ export default class SampleAction extends Action {
 
     Log.debug('Turn:', turn, 'Width:', width, 'Height:', height, 'Own General:', ownGeneral)
 
-    if (!turn) return
+    if (!turn) return null
 
-    if (random(1, 100) < 90) return
+    if (random(1, 100) < 90) return null
 
     let end: number
 
