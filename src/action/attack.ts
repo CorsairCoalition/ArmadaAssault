@@ -53,6 +53,7 @@ export default class Attack extends Action {
 		this.nextMove = turn + Math.min(actions.length, 5)
 
 		this.lastRecommendation = {
+			date: new Date(),
 			interrupt: false,
 			actions: actions,
 			recommender: this.constructor.name,

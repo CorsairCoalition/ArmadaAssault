@@ -51,6 +51,7 @@ export default class Spread extends Action {
 		this.nextMove = turn + actions.length
 
 		this.lastRecommendation = {
+			date: new Date(),
 			interrupt: false,
 			actions: actions,
 			recommender: this.constructor.name,

@@ -41,6 +41,7 @@ export default class SampleAction extends Action {
 
     // Return a recommendation
     return {
+      date: new Date(),
       interrupt: false,
       actions: [action],
       recommender: 'SampleAction',
