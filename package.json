@@ -1,18 +1,18 @@
 {
   "name": "@corsaircoalition/armada-assault",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "generals.io bot actions generator",
   "main": "out/index.js",
   "type": "module",
   "dependencies": {
-    "@corsaircoalition/common": "^1.0.5",
+    "@corsaircoalition/common": "^1.2.0",
     "commander": "^10.0.1",
     "sterta": "^2.2.1"
   },
   "devDependencies": {
     "@sindresorhus/tsconfig": "^3.0.1",
-    "@types/node": "^18.16.16",
-    "typescript": "^5.1.3"
+    "@types/node": "^18.17.1",
+    "typescript": "^5.1.6"
   },
   "bin": "./out/index.js",
   "files": [
