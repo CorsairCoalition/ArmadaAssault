@@ -1,7 +1,11 @@
+#!/usr/bin/env node
+
 import { Command } from 'commander'
-import { Log, getAvailableActions } from './utils.js'
 import { App } from './app.js'
+import { Log } from '@corsaircoalition/common'
 import fs from 'node:fs/promises'
+import path from 'path'
+import { fileURLToPath } from 'url';
 
 // read configuration
 const packageJsonPath = new URL('../package.json', import.meta.url)
@@ -19,11 +23,29 @@ program
 	.showHelpAfterError()
 	.action(run)
 
+let availableActions: string[] = []
+
+async function getAvailableActions(): Promise<string[]> {
+	if (availableActions.length > 0) return availableActions
+
+	const currentFilePath = fileURLToPath(import.meta.url)
+	const currentDir = path.dirname(currentFilePath)
+	const actionDir = path.join(currentDir, 'action')
+	const files = await fs.readdir(actionDir);
+
+	availableActions = files
+		.filter((file) => file.endsWith('.js') && file !== 'action.js')
+		.map((file) => file.replace('.js', ''));
+
+	return availableActions
+}
+
+
 async function run(configFile: string, actionNames: string[]) {
 	// read and process command line options
 	const options = program.opts()
 
-	let availableActions = getAvailableActions()
+	let availableActions = await getAvailableActions()
 
 	if (actionNames.length === 0) {
 		console.log()
@@ -43,7 +65,7 @@ async function run(configFile: string, actionNames: string[]) {
 
 	const config = JSON.parse(await fs.readFile(configFile, 'utf8'))
 	config.BOT_ID_PREFIX = config.BOT_ID_PREFIX || 'cortex'
-	Log.setDebugOutput(options['debug'])
+	Log.enableDebugOutput(options['debug'])
 
 	// debug output
 	Log.stdout(`[initilizing] ${pkg.name} v${pkg.version}`)

@@ -1,21 +1,16 @@
-/// <reference path="./app.d.ts" />
-
-import { Log } from './utils.js'
-import { Redis } from './redis.js'
+import { Log, Redis, hashUserId } from '@corsaircoalition/common'
 import Action from './action/action.js'
 import GameMap from './gameMap.js'
-import crypto from 'crypto'
 
 export class App {
 	public botId: string
-	private redis: Redis
 	private actionNames: string[]
 	private actions: Action[] = [];
 	private gameMap: GameMap
 	private currentReplayId: string
 
 	constructor(config: any, actionNames: string[]) {
-		this.botId = config.BOT_ID_PREFIX + '-' + crypto.createHash('sha256').update(config.gameConfig.userId).digest('base64').replace(/[^\w\s]/gi, '').slice(-7)
+		this.botId = config.gameConfig.BOT_ID_PREFIX + '-' + hashUserId(config.gameConfig.userId)
 		config.redisConfig.CHANNEL_PREFIX = this.botId
 		this.actionNames = actionNames
 		this.initialize(config)
@@ -46,9 +41,8 @@ export class App {
 	}
 
 	private initializeRedisConnection = async (redisConfig: Config.Redis) => {
-		this.redis = new Redis(redisConfig)
-		await this.redis.connect()
-		this.redis.subscribe(RedisData.CHANNEL.TURN, this.handleTurnUpdates)
+		await Redis.initilize(redisConfig)
+		Redis.subscribe(this.botId, RedisData.CHANNEL.TURN, this.handleTurnUpdates)
 	}
 
 	private handleTurnUpdates = async (data: any) => {
@@ -57,7 +51,7 @@ export class App {
 			return
 		}
 
-		const gameState = await this.redis.getAllKeys(data.replay_id)
+		const gameState = await Redis.getAllKeys(`${this.botId}-${data.replay_id}`)
 
 		let replayId = gameState[RedisData.KEY.REPLAY_ID]
 		if (this.currentReplayId !== replayId) {
@@ -72,13 +66,13 @@ export class App {
 		for (const action of this.actions) {
 			const recommendation = await action.generateRecommendation(gameState, this.gameMap)
 			if (recommendation) {
-				this.redis.publish(RedisData.CHANNEL.RECOMMENDATION, recommendation)
+				Redis.publish(this.botId, RedisData.CHANNEL.RECOMMENDATION, recommendation)
 			}
 		}
 	}
 
 	public quit = async () => {
 		Log.stdout('Closing Redis connection...')
-		return this.redis.quit()
+		return Redis.quit()
 	}
 }

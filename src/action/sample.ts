@@ -1,6 +1,6 @@
 // sampleAction.ts
 import Action from './action.js'
-import { Log, random } from '../utils.js'
+import { Log, random } from '@corsaircoalition/common'
 import GameMap from '../gameMap.js'
 
 export default class SampleAction extends Action {
